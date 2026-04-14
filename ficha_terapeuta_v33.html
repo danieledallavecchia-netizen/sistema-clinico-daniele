@@ -6533,7 +6533,7 @@ const QUIZ_NAMES = {
 };
 
 function carregarQuizResultados() {
-  const c = activeClient ? clients[activeClient] : null;
+  const c = activeId ? clients[activeId] : null;
   if (!c) { showToast('Seleccione uma cliente primeiro', 'warn'); return; }
   const id   = c.dados?.f_id   || '';
   const nome = c.dados?.f_nome || '';
