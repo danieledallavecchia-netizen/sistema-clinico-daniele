@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fichas de Atendimento · Protocolo Regressão Multidimensional</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cinzel:wght@400;500;600&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #faf7f2;
+  --cream2: #f4f0e8;
+  --cream3: #ede8de;
+  --paper: #ffffff;
+  --border: #ddd7c8;
+  --border2: #c9c0ac;
+  --gold: #9a7830;
+  --gold-light: #b89040;
+  --gold-pale: rgba(154,120,48,0.08);
+  --gold-border: rgba(154,120,48,0.25);
+  --text: #2c2416;
+  --text-mid: #5a4f3a;
+  --text-dim: #8a7a62;
+  --text-faint: #b0a08a;
+  --green: #3a6b4a;
+  --violet: #5a4878;
+  --teal: #2d6b6b;
+  --rose: #7a3848;
+  --blue: #2d4a7a;
+  --amber: #8a5020;
+  --nav-w: 260px;
+  --r: 8px;
+  --shadow: 0 2px 12px rgba(44,36,22,0.08);
+  --shadow-lg: 0 6px 28px rgba(44,36,22,0.13);
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: "Source Sans 3", sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.7; }
+
+/* ═══ SIDEBAR ═══ */
+.sb { position: fixed; top: 0; left: 0; width: var(--nav-w); height: 100vh; background: var(--paper); border-right: 1px solid var(--border); overflow-y: auto; z-index: 200; display: flex; flex-direction: column; box-shadow: 2px 0 16px rgba(44,36,22,0.06); }
+.sb::-webkit-scrollbar { width: 3px; }
+.sb::-webkit-scrollbar-thumb { background: var(--border2); }
+.sb-logo { padding: 1.5rem 1.3rem 1.2rem; border-bottom: 1px solid var(--border); }
+.sb-brand { font-family: "Cinzel", serif; font-size: 9px; letter-spacing: 2.5px; color: var(--gold); text-transform: uppercase; display: block; margin-bottom: 4px; }
+.sb-title { font-family: "Cormorant Garamond", serif; font-size: 17px; font-weight: 400; color: var(--text); line-height: 1.3; }
+.sb-actions { padding: 1rem 1.3rem; border-bottom: 1px solid var(--border); }
+.btn-new { width: 100%; padding: 0.6rem 1rem; background: var(--gold); color: #fff; border: none; border-radius: 6px; font-family: "Cinzel", serif; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 7px; }
+.btn-new:hover { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(154,120,48,.3); }
+.btn-import { width: 100%; padding: 0.5rem 1rem; background: none; color: var(--teal); border: 1px solid var(--teal); border-radius: 6px; font-family: "Cinzel", serif; font-size: 9.5px; letter-spacing: 1.2px; text-transform: uppercase; cursor: pointer; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 0.5rem; }
+.btn-import:hover { background: rgba(45,107,107,0.08); }
+.import-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: background .15s; margin-bottom: 0.5rem; }
+.import-row:hover { background: var(--cream); border-color: var(--teal); }
+.import-row-name { font-weight: 500; font-size: 13.5px; flex: 1; }
+.import-row-date { font-size: 11px; color: var(--text-dim); }
+.import-empty { text-align: center; padding: 2rem 1rem; color: var(--text-dim); font-style: italic; font-size: 13px; }
+.import-loading { text-align: center; padding: 1.5rem; color: var(--text-dim); font-size: 13px; }
+.import-error { padding: 0.8rem 1rem; background: rgba(122,56,72,0.08); border-left: 3px solid var(--rose); border-radius: 4px; font-size: 13px; color: var(--rose); margin-bottom: 1rem; }
+.sb-list-title { font-family: "Cinzel", serif; font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; padding: 0.9rem 1.3rem 0.4rem; }
+.sb-client { display: flex; align-items: center; gap: 0; padding: 0; border-bottom: 1px solid rgba(221,215,200,0.5); cursor: pointer; transition: background .15s; }
+.sb-client:hover { background: var(--cream); }
+.sb-client.active { background: var(--gold-pale); border-left: 3px solid var(--gold); }
+.sb-client-info { flex: 1; padding: 0.7rem 1rem; min-width: 0; }
+.sb-client-name { font-size: 13.5px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb-client-meta { font-size: 11px; color: var(--text-dim); margin-top: 1px; }
+.sb-client-del { padding: 0.5rem 0.7rem; color: var(--text-faint); font-size: 15px; transition: color .2s; flex-shrink: 0; }
+.sb-client-del:hover { color: var(--rose); }
+.sb-empty { padding: 1.5rem 1.3rem; font-size: 12.5px; color: var(--text-dim); font-style: italic; text-align: center; }
+.sb-foot { margin-top: auto; padding: 0.9rem 1.3rem; border-top: 1px solid var(--border); font-family: "Cinzel", serif; font-size: 8.5px; letter-spacing: 1.5px; color: var(--text-faint); text-transform: uppercase; text-align: center; line-height: 1.8; }
+
+/* ═══ MAIN ═══ */
+.main { margin-left: var(--nav-w); min-height: 100vh; }
+
+/* ═══ WELCOME SCREEN ═══ */
+.welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 3rem; text-align: center; }
+.welcome-icon { width: 80px; height: 80px; border-radius: 50%; background: var(--gold-pale); border: 2px solid var(--gold-border); display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 2rem; }
+.welcome h2 { font-family: "Cormorant Garamond", serif; font-size: 30px; font-weight: 300; color: var(--text); margin-bottom: 0.7rem; }
+.welcome p { color: var(--text-dim); font-size: 14px; max-width: 400px; margin: 0 auto 2rem; }
+.btn-welcome { padding: 0.75rem 2rem; background: var(--gold); color: #fff; border: none; border-radius: 6px; font-family: "Cinzel", serif; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: all .2s; }
+.btn-welcome:hover { background: var(--gold-light); box-shadow: 0 4px 14px rgba(154,120,48,.3); }
+
+/* ═══ CLIENT HEADER ═══ */
+.client-header { background: var(--paper); border-bottom: 1px solid var(--border); padding: 1.8rem 2.5rem 1.4rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(44,36,22,0.05); }
+.ch-eyebrow { font-family: "Cinzel", serif; font-size: 9px; letter-spacing: 2.5px; color: var(--gold); text-transform: uppercase; margin-bottom: 0.3rem; }
+.ch-name { font-family: "Cormorant Garamond", serif; font-size: 28px; font-weight: 400; color: var(--text); line-height: 1.2; margin-bottom: 0.4rem; }
+.ch-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.ch-meta-item { font-size: 12.5px; color: var(--text-dim); display: flex; align-items: center; gap: 5px; }
+.ch-meta-item span { color: var(--text); font-weight: 500; }
+.ch-actions { display: flex; gap: 0.7rem; margin-top: 1rem; flex-wrap: wrap; }
+.btn-sm { padding: 0.4rem 1rem; border-radius: 5px; font-family: "Cinzel", serif; font-size: 9.5px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all .2s; border: 1px solid var(--border2); background: var(--cream); color: var(--text-mid); }
+.btn-sm:hover { background: var(--cream2); border-color: var(--gold); color: var(--gold); }
+.btn-sm.save { background: var(--gold); color: #fff; border-color: var(--gold); }
+.btn-sm.save:hover { background: var(--gold-light); }
+.btn-sm.export { background: var(--paper); color: var(--blue); border-color: var(--blue); }
+.btn-sm.export:hover { background: rgba(45,74,122,.06); }
+.save-status { font-size: 11.5px; color: var(--green); display: flex; align-items: center; gap: 4px; opacity: 0; transition: opacity .3s; padding: 0.4rem 0; }
+.save-status.show { opacity: 1; }
+
+/* ═══ SESSION TABS ═══ */
+.session-tabs { background: var(--cream2); border-bottom: 1px solid var(--border); padding: 0 2.5rem; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; }
+.session-tabs::-webkit-scrollbar { display: none; }
+.stab { padding: 0.8rem 1.2rem; font-family: "Cinzel", serif; font-size: 9.5px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-dim); border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all .2s; user-select: none; }
+.stab:hover { color: var(--text-mid); }
+.stab.active { color: var(--gold); border-bottom-color: var(--gold); background: transparent; }
+.stab.has-data { color: var(--text-mid); }
+.stab.has-data::after { content: "●"; font-size: 5px; margin-left: 4px; vertical-align: middle; color: var(--green); }
+
+/* ═══ SESSION CONTENT ═══ */
+.session-content { display: none; padding: 2rem 2.5rem 4rem; max-width: 900px; }
+.session-content.active { display: block; }
+
+/* ═══ SECTION BLOCKS ═══ */
+.form-section { background: var(--paper); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 1.5rem; overflow: hidden; box-shadow: var(--shadow); }
+.fs-header { padding: 1rem 1.4rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.8rem; cursor: pointer; user-select: none; }
+.fs-header:hover { background: var(--cream); }
+.fs-icon { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.fs-title { font-family: "Cinzel", serif; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-mid); flex: 1; }
+.fs-toggle { font-size: 11px; color: var(--text-faint); transition: transform .2s; }
+.fs-body { padding: 1.4rem; display: block; }
+.fs-body.collapsed { display: none; }
+
+/* ═══ FORM FIELDS ═══ */
+.field-row { display: grid; gap: 1.2rem; margin-bottom: 1.2rem; }
+.field-row.cols-2 { grid-template-columns: 1fr 1fr; }
+.field-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.field-row.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label { font-family: "Cinzel", serif; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+.field input, .field textarea, .field select {
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  padding: 0.55rem 0.8rem;
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 13.5px;
+  color: var(--text);
+  background: var(--cream);
+  transition: border-color .2s, box-shadow .2s;
+  resize: vertical;
+  outline: none;
+  line-height: 1.6;
+}
+.field input:focus, .field textarea:focus, .field select:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(154,120,48,0.12);
+  background: #fff;
+}
+.field textarea { min-height: 80px; }
+.field textarea.tall { min-height: 130px; }
+.field textarea.short { min-height: 55px; }
+.field-hint { font-size: 11px; color: var(--text-faint); font-style: italic; margin-top: 2px; }
+
+/* ═══ DIRECTION BLOCK ═══ */
+.direction-grid { display: grid; gap: 1.2rem; }
+.dir-card { background: var(--cream); border: 1px solid var(--border); border-radius: 7px; overflow: hidden; }
+.dir-head { display: flex; align-items: center; gap: 0.7rem; padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); }
+.dir-compass { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+.dir-label { flex: 1; }
+.dir-label strong { font-family: "Cinzel", serif; font-size: 9.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--text); display: block; }
+.dir-meaning { font-size: 11.5px; color: var(--text-dim); font-style: italic; margin-top: 1px; }
+.dir-body { padding: 0.8rem 1rem; }
+.dir-body textarea { width: 100%; border: 1px solid var(--border2); border-radius: 5px; padding: 0.5rem 0.75rem; font-size: 13.5px; font-family: "Source Sans 3", sans-serif; color: var(--text); background: #fff; resize: vertical; min-height: 70px; outline: none; transition: border-color .2s; line-height: 1.6; }
+.dir-body textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(154,120,48,0.1); }
+.dir-interp { margin-top: 0.6rem; padding: 0.55rem 0.8rem; background: rgba(154,120,48,0.06); border-left: 2px solid var(--gold-border); border-radius: 0 5px 5px 0; font-size: 12px; color: var(--text-mid); font-style: italic; display: none; }
+.dir-interp.show { display: block; }
+.dir-interp strong { color: var(--gold); font-style: normal; font-size: 10px; font-family: "Cinzel", serif; letter-spacing: 0.5px; }
+
+/* ═══ ANAMNESE SECTION ═══ */
+.section-divider { font-family: "Cinzel", serif; font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; margin: 1.4rem 0 0.8rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+
+/* ═══ CHECKLIST ═══ */
+.check-row { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.3rem 0; }
+.check-row input[type="checkbox"] { margin-top: 3px; flex-shrink: 0; accent-color: var(--gold); width: 14px; height: 14px; }
+.check-row label { font-size: 13px; color: var(--text-mid); cursor: pointer; line-height: 1.5; }
+
+/* ═══ COLOR INDICATORS ═══ */
+.tag-violet { background: rgba(90,72,120,0.08); border-left-color: var(--violet) !important; }
+.tag-teal { background: rgba(45,107,107,0.08); border-left-color: var(--teal) !important; }
+.tag-rose { background: rgba(122,56,72,0.08); border-left-color: var(--rose) !important; }
+.tag-blue { background: rgba(45,74,122,0.08); border-left-color: var(--blue) !important; }
+.tag-amber { background: rgba(138,80,32,0.08); border-left-color: var(--amber) !important; }
+.tag-green { background: rgba(58,107,74,0.08); border-left-color: var(--green) !important; }
+
+/* ═══ MODAL ═══ */
+.modal-overlay { position: fixed; inset: 0; background: rgba(44,36,22,0.45); z-index: 500; display: none; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+.modal-overlay.show { display: flex; }
+.modal { background: var(--paper); border-radius: 12px; padding: 2rem; width: 90%; max-width: 520px; box-shadow: var(--shadow-lg); border: 1px solid var(--border); }
+.modal h3 { font-family: "Cormorant Garamond", serif; font-size: 24px; font-weight: 400; color: var(--text); margin-bottom: 0.4rem; }
+.modal p { font-size: 13px; color: var(--text-dim); margin-bottom: 1.5rem; }
+.modal-fields { display: grid; gap: 1rem; margin-bottom: 1.5rem; }
+.modal-actions { display: flex; gap: 0.7rem; justify-content: flex-end; }
+.btn-cancel { padding: 0.55rem 1.3rem; background: none; border: 1px solid var(--border2); border-radius: 5px; color: var(--text-mid); font-size: 13px; cursor: pointer; transition: all .2s; }
+.btn-cancel:hover { background: var(--cream); }
+.btn-create { padding: 0.55rem 1.5rem; background: var(--gold); border: none; border-radius: 5px; color: #fff; font-family: "Cinzel", serif; font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; cursor: pointer; transition: all .2s; }
+.btn-create:hover { background: var(--gold-light); }
+
+/* ═══ CONFIRM MODAL ═══ */
+.modal.danger { border-top: 3px solid var(--rose); }
+.btn-danger { padding: 0.55rem 1.5rem; background: var(--rose); border: none; border-radius: 5px; color: #fff; font-family: "Cinzel", serif; font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; cursor: pointer; transition: all .2s; }
+.btn-danger:hover { background: #8a3040; }
+
+/* ═══ EXPORT / PRINT ═══ */
+@media print {
+  .sb, .session-tabs, .ch-actions, .btn-sm, .fs-toggle { display: none !important; }
+  .main { margin-left: 0; }
+  .session-content { display: block !important; padding: 1rem; }
+  .fs-body.collapsed { display: block !important; }
+  .form-section { break-inside: avoid; }
+}
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 700px) {
+  .field-row.cols-2, .field-row.cols-3, .field-row.cols-4 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sb">
+  <div class="sb-logo">
+    <span class="sb-brand">Academia Pedro Frias · DGERT</span>
+    <div class="sb-title">Fichas de<br>Atendimento</div>
+  </div>
+  <div class="sb-actions">
+    <button class="btn-new" onclick="openNewClientModal()">
+      <span>+</span> Novo Cliente
+    </button>
+    <button class="btn-import" onclick="openImportModal()">
+      <span>↓</span> Importar do Forms
+    </button>
+    <div id="syncStatus" style="display:flex;align-items:center;gap:6px;padding:0.35rem 0.2rem;margin-top:0.2rem">
+      <span id="syncDot" style="width:7px;height:7px;border-radius:50%;background:var(--text-faint);flex-shrink:0;transition:background .3s"></span>
+      <span id="syncLabel" style="font-size:10px;color:var(--text-faint);font-family:'Cinzel',serif;letter-spacing:.5px;transition:color .3s">Google Forms</span>
+    </div>
+  </div>
+  <div class="sb-list-title">Clientes</div>
+  <div id="clientList"></div>
+  <div class="sb-foot">Protocolo Regressão<br>Multidimensional · 7 Sessões</div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main" id="mainArea">
+  <div class="welcome" id="welcomeScreen">
+    <div class="welcome-icon">🌿</div>
+    <h2>Fichas de Atendimento</h2>
+    <p>Registe cada sessão do protocolo de regressão multidimensional com toda a riqueza e detalhe necessários.</p>
+    <button class="btn-welcome" onclick="openNewClientModal()">Criar Primeira Ficha</button>
+  </div>
+</main>
+
+<!-- ═══ MODAL NOVO CLIENTE ═══ -->
+<div class="modal-overlay" id="newClientModal">
+  <div class="modal">
+    <h3>Nova Ficha de Cliente</h3>
+    <p>Preencha os dados iniciais para criar a ficha de acompanhamento.</p>
+    <div class="modal-fields">
+      <div class="field">
+        <label>Nome Completo *</label>
+        <input type="text" id="nc-nome" placeholder="Nome do cliente">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="field">
+          <label>Idade</label>
+          <input type="number" id="nc-idade" placeholder="ex: 38" min="1" max="120">
+        </div>
+        <div class="field">
+          <label>Género</label>
+          <select id="nc-genero">
+            <option value="">— selecionar —</option>
+            <option>Feminino</option>
+            <option>Masculino</option>
+            <option>Outro</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Contacto / Email</label>
+        <input type="text" id="nc-contacto" placeholder="Telemóvel ou email">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('newClientModal')">Cancelar</button>
+      <button class="btn-create" onclick="createClient()">Criar Ficha</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL CONFIRMAR ELIMINAÇÃO ═══ -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal danger">
+    <h3>Eliminar Ficha</h3>
+    <p id="deleteModalText">Tem a certeza que deseja eliminar esta ficha? Esta ação não pode ser desfeita.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('deleteModal')">Cancelar</button>
+      <button class="btn-danger" onclick="confirmDelete()">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL IMPORTAR DO FORMS ═══ -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal" style="max-width:560px">
+    <h3>Importar Anamnese do Google Forms</h3>
+    <p>Selecione uma resposta do formulário para criar automaticamente a ficha de cliente com a anamnese preenchida.</p>
+    <div id="importList"><div class="import-loading">A carregar respostas...</div></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('importModal')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// DATA MODEL
+// ══════════════════════════════════════════════
+const STORAGE_KEY = 'protocolo_fichas_v2';
+// ▼ Cole aqui o URL do seu Apps Script Web App após publicar ▼
+const FORMS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbypHNPrY6oXQ41eSrVq6r_dYii1fZil-i7IEV9vrEAeDOqu9XdkUf02_w2nJXuHJmBe/exec';
+let state = { clientes: {} };
+let currentClientId = null;
+let currentSession = 1;
+let deleteTargetId = null;
+
+const SESSION_THEMES = [
+  { n:1, title:"Sessão 1", tema:"Anamnese & Primeiro Contacto Hipnótico", color:"var(--violet)", icon:"🌱" },
+  { n:2, title:"Sessão 2", tema:"Sala de Cura Dourada", color:"var(--gold)", icon:"✨" },
+  { n:3, title:"Sessão 3", tema:"Regressão a Vida Passada", color:"var(--teal)", icon:"🌀" },
+  { n:4, title:"Sessão 4", tema:"Templo do Perdão", color:"var(--rose)", icon:"🕊" },
+  { n:5, title:"Sessão 5", tema:"Templo da Luz & Eu Superior", color:"var(--blue)", icon:"☀" },
+  { n:6, title:"Sessão 6", tema:"Integração & Interligação", color:"var(--green)", icon:"🌿" },
+  { n:7, title:"Sessão 7", tema:"Selagem & Encerramento", color:"var(--amber)", icon:"🔮" }
+];
+
+const DIR_MEANINGS = {
+  frente:   { label:"Frente", icon:"⬆", meaning:"Presente ou futuro imediato", color:"var(--blue)", desc:"O que se projeta à frente é o que o inconsciente mostra do momento presente ou do futuro próximo — sonhos, expectativas, o caminho que se abre." },
+  direita:  { label:"Direita", icon:"➡", meaning:"O Inconsciente — o que sente sem ter consciência", color:"var(--violet)", desc:"O lado direito revela conteúdos inconscientes: emoções profundas, bloqueios, padrões repetitivos que a pessoa vive mas não reconhece conscientemente." },
+  esquerda: { label:"Esquerda", icon:"⬅", meaning:"O Consciente — o que sabe e as suas emoções conscientes", color:"var(--teal)", desc:"O lado esquerdo espelha o que a pessoa já conhece de si mesma: a sua vida quotidiana, as emoções e sentimentos que tem consciência de sentir." },
+  atras:    { label:"Atrás", icon:"⬇", meaning:"O Passado", color:"var(--amber)", desc:"O que está atrás representa experiências passadas, memórias, traumas antigos, padrões herdados — tudo o que ficou para trás mas ainda influencia o presente." },
+  cima:     { label:"Em Cima", icon:"✦", meaning:"Dimensão Espiritual / Eu Superior", color:"var(--gold)", desc:"O que está acima aponta para a dimensão espiritual, o Eu Superior, os guias, a sabedoria da alma — a perspetiva mais elevada que transcende o ego." }
+};
+
+// ══════════════════════════════════════════════
+// PERSISTENCE
+// ══════════════════════════════════════════════
+function loadState() {
+  try { const s = localStorage.getItem(STORAGE_KEY); if(s) state = JSON.parse(s); } catch(e) {}
+}
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+function collectFormData(clientId, sessNum) {
+  const prefix = `${clientId}_s${sessNum}`;
+  const data = {};
+  document.querySelectorAll(`[data-field^="${prefix}_"]`).forEach(el => {
+    const key = el.getAttribute('data-field').replace(`${prefix}_`, '');
+    data[key] = el.type === 'checkbox' ? el.checked : el.value;
+  });
+  return data;
+}
+function fillFormData(clientId, sessNum) {
+  const prefix = `${clientId}_s${sessNum}`;
+  const c = state.clientes[clientId];
+  if(!c || !c.sessoes || !c.sessoes[sessNum]) return;
+  const data = c.sessoes[sessNum];
+  Object.entries(data).forEach(([key, val]) => {
+    const el = document.querySelector(`[data-field="${prefix}_${key}"]`);
+    if(!el) return;
+    if(el.type === 'checkbox') el.checked = !!val;
+    else el.value = val || '';
+    // Trigger direction interpretation
+    if(['frente','direita','esquerda','atras','cima'].includes(key)) {
+      const card = el.closest('.dir-card');
+      if(card) updateDirInterp(card, key, val);
+    }
+  });
+}
+
+// ══════════════════════════════════════════════
+// CLIENT MANAGEMENT
+// ══════════════════════════════════════════════
+function openNewClientModal() {
+  ['nc-nome','nc-idade','nc-contacto'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('nc-genero').value = '';
+  document.getElementById('newClientModal').classList.add('show');
+  setTimeout(() => document.getElementById('nc-nome').focus(), 100);
+}
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function createClient() {
+  const nome = document.getElementById('nc-nome').value.trim();
+  if(!nome) { document.getElementById('nc-nome').focus(); return; }
+  const id = 'c_' + Date.now();
+  state.clientes[id] = {
+    nome,
+    idade: document.getElementById('nc-idade').value.trim(),
+    genero: document.getElementById('nc-genero').value,
+    contacto: document.getElementById('nc-contacto').value.trim(),
+    dataCriacao: new Date().toLocaleDateString('pt-PT'),
+    sessoes: {}
+  };
+  saveState();
+  closeModal('newClientModal');
+  renderClientList();
+  openClient(id);
+}
+function deleteClient(id) {
+  deleteTargetId = id;
+  const nome = state.clientes[id]?.nome || 'este cliente';
+  document.getElementById('deleteModalText').textContent = `Tem a certeza que deseja eliminar a ficha de "${nome}"? Esta ação não pode ser desfeita.`;
+  document.getElementById('deleteModal').classList.add('show');
+}
+function confirmDelete() {
+  if(!deleteTargetId) return;
+  delete state.clientes[deleteTargetId];
+  saveState();
+  closeModal('deleteModal');
+  if(currentClientId === deleteTargetId) {
+    currentClientId = null;
+    document.getElementById('mainArea').innerHTML = document.querySelector('.welcome')?.outerHTML || '<div class="welcome"><div class="welcome-icon">🌿</div><h2>Selecione um cliente</h2></div>';
+    // re-append welcome
+    showWelcome();
+  }
+  renderClientList();
+}
+function showWelcome() {
+  document.getElementById('mainArea').innerHTML = `
+    <div class="welcome" id="welcomeScreen">
+      <div class="welcome-icon">🌿</div>
+      <h2>Fichas de Atendimento</h2>
+      <p>Selecione um cliente na lista ou crie uma nova ficha para começar.</p>
+      <button class="btn-welcome" onclick="openNewClientModal()">Criar Nova Ficha</button>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════
+// RENDER CLIENT LIST
+// ══════════════════════════════════════════════
+function renderClientList() {
+  const el = document.getElementById('clientList');
+  const ids = Object.keys(state.clientes);
+  if(!ids.length) { el.innerHTML = '<div class="sb-empty">Nenhuma ficha ainda</div>'; return; }
+  el.innerHTML = ids.map(id => {
+    const c = state.clientes[id];
+    const sessCount = Object.keys(c.sessoes || {}).length;
+    const active = id === currentClientId ? 'active' : '';
+    const meta = [c.idade ? c.idade + ' anos' : '', c.genero || ''].filter(Boolean).join(' · ');
+    return `<div class="sb-client ${active}" onclick="openClient('${id}')">
+      <div class="sb-client-info">
+        <div class="sb-client-name">${c.nome}</div>
+        <div class="sb-client-meta">${meta || c.dataCriacao}${sessCount ? ' · ' + sessCount + ' sess.' : ''}</div>
+      </div>
+      <div class="sb-client-del" onclick="event.stopPropagation();deleteClient('${id}')" title="Eliminar">✕</div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// OPEN CLIENT
+// ══════════════════════════════════════════════
+function openClient(id) {
+  // Save current before switching
+  if(currentClientId) saveCurrentSession();
+  currentClientId = id;
+  currentSession = 1;
+  const c = state.clientes[id];
+  const main = document.getElementById('mainArea');
+  main.innerHTML = `
+    <div class="client-header">
+      <div class="ch-eyebrow">Protocolo Regressão Multidimensional · 7 Sessões</div>
+      <div class="ch-name" id="ch-name-display">${c.nome}</div>
+      <div class="ch-meta">
+        ${c.idade ? `<div class="ch-meta-item">Idade: <span>${c.idade} anos</span></div>` : ''}
+        ${c.genero ? `<div class="ch-meta-item">Género: <span>${c.genero}</span></div>` : ''}
+        ${c.contacto ? `<div class="ch-meta-item">Contacto: <span>${c.contacto}</span></div>` : ''}
+        <div class="ch-meta-item">Ficha criada: <span>${c.dataCriacao}</span></div>
+      </div>
+      <div class="ch-actions">
+        <button class="btn-sm save" onclick="saveCurrentSession()">💾 Guardar</button>
+        <button class="btn-sm export" onclick="exportTXT()">📄 Exportar TXT</button>
+        <button class="btn-sm" onclick="window.print()">🖨 Imprimir</button>
+        <div class="save-status" id="saveStatus">✓ Guardado com sucesso</div>
+      </div>
+    </div>
+    <div class="session-tabs" id="sessionTabs"></div>
+    <div id="sessionPanes"></div>
+  `;
+  renderTabs();
+  renderAllPanes(id);
+  renderClientList();
+}
+
+// ══════════════════════════════════════════════
+// RENDER TABS
+// ══════════════════════════════════════════════
+function renderTabs() {
+  const c = state.clientes[currentClientId];
+  document.getElementById('sessionTabs').innerHTML = SESSION_THEMES.map(s => {
+    const hasData = c.sessoes && c.sessoes[s.n] && Object.keys(c.sessoes[s.n]).length > 0;
+    return `<div class="stab ${hasData ? 'has-data' : ''} ${s.n === currentSession ? 'active' : ''}" 
+      onclick="switchSession(${s.n})">${s.title}</div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// SWITCH SESSION
+// ══════════════════════════════════════════════
+function switchSession(n) {
+  saveCurrentSession();
+  currentSession = n;
+  document.querySelectorAll('.stab').forEach((t,i) => t.classList.toggle('active', i+1 === n));
+  document.querySelectorAll('.session-content').forEach(p => p.classList.remove('active'));
+  const pane = document.getElementById(`pane-s${n}`);
+  if(pane) { pane.classList.add('active'); fillFormData(currentClientId, n); }
+}
+
+// ══════════════════════════════════════════════
+// RENDER ALL PANES
+// ══════════════════════════════════════════════
+function renderAllPanes(clientId) {
+  const container = document.getElementById('sessionPanes');
+  container.innerHTML = SESSION_THEMES.map(s => `
+    <div class="session-content ${s.n === 1 ? 'active' : ''}" id="pane-s${s.n}">
+      ${buildSessionPane(clientId, s)}
+    </div>
+  `).join('');
+  SESSION_THEMES.forEach(s => fillFormData(clientId, s.n));
+  // Setup auto-save on change
+  container.querySelectorAll('[data-field]').forEach(el => {
+    el.addEventListener('change', () => autoSave());
+    el.addEventListener('input', () => {
+      autoSave();
+      // Direction interpretation
+      const dirKey = el.getAttribute('data-field')?.split('_').pop();
+      if(['frente','direita','esquerda','atras','cima'].includes(dirKey)) {
+        const card = el.closest('.dir-card');
+        if(card) updateDirInterp(card, dirKey, el.value);
+      }
+    });
+  });
+}
+
+// ══════════════════════════════════════════════
+// BUILD SESSION PANE HTML
+// ══════════════════════════════════════════════
+function buildSessionPane(clientId, s) {
+  const p = `${clientId}_s${s.n}`;
+  const today = new Date().toISOString().split('T')[0];
+  const isS1 = s.n === 1;
+  return `
+<!-- CABEÇALHO DA SESSÃO -->
+<div class="form-section">
+  <div class="fs-header" onclick="toggleSection(this)">
+    <div class="fs-icon" style="background:${s.color}22;color:${s.color}">${s.icon}</div>
+    <div class="fs-title">${s.title} · ${s.tema}</div>
+    <div class="fs-toggle">▾</div>
+  </div>
+  <div class="fs-body">
+    <div class="field-row cols-4">
+      <div class="field"><label>Sessão Nº</label>
+        <input type="text" data-field="${p}_sessao_num" value="${s.n}" readonly style="background:var(--cream2)"></div>
+      <div class="field"><label>Data</label>
+        <input type="date" data-field="${p}_data" value="${today}"></div>
+      <div class="field"><label>Hora Início</label>
+        <input type="time" data-field="${p}_hora_inicio"></div>
+      <div class="field"><label>Hora Fim</label>
+        <input type="time" data-field="${p}_hora_fim"></div>
+    </div>
+    <div class="field-row cols-2">
+      <div class="field"><label>Objetivo da Sessão</label>
+        <input type="text" data-field="${p}_objetivo" placeholder="Ex: Indução inicial, Sala de Cura Dourada..."></div>
+      <div class="field"><label>Estado Inicial do Cliente</label>
+        <input type="text" data-field="${p}_estado_inicial" placeholder="Ex: Ansioso, receptivo, cansado..."></div>
+    </div>
+    <div class="field"><label>Intenção Terapêutica / Notas de Preparação</label>
+      <textarea data-field="${p}_intencao" class="short" placeholder="Intenção definida para esta sessão, temas a abordar..."></textarea></div>
+  </div>
+</div>
+
+${isS1 ? buildAnamnese(p) : buildResumoAnterior(p, s.n)}
+
+<!-- INDUÇÃO HIPNÓTICA -->
+<div class="form-section">
+  <div class="fs-header" onclick="toggleSection(this)">
+    <div class="fs-icon" style="background:rgba(45,107,107,0.12);color:var(--teal)">🌊</div>
+    <div class="fs-title">Indução Hipnótica</div>
+    <div class="fs-toggle">▾</div>
+  </div>
+  <div class="fs-body">
+    <div class="field-row cols-3">
+      <div class="field"><label>Tipo de Hipnose</label>
+        <select data-field="${p}_tipo_hipnose">
+          <option value="">— selecionar —</option>
+          <option>Hipnose Ativa</option>
+          <option>Hipnose Passiva</option>
+          <option>Mista</option>
+        </select></div>
+      <div class="field"><label>Profundidade Atingida</label>
+        <select data-field="${p}_profundidade">
+          <option value="">— selecionar —</option>
+          <option>Leve (estado alfa)</option>
+          <option>Média (alfa-teta)</option>
+          <option>Profunda (teta)</option>
+          <option>Muito profunda</option>
+        </select></div>
+      <div class="field"><label>Facilidade de Indução</label>
+        <select data-field="${p}_facilidade">
+          <option value="">— selecionar —</option>
+          <option>Fácil</option>
+          <option>Moderada</option>
+          <option>Difícil</option>
+          <option>Resistência observada</option>
+        </select></div>
+    </div>
+    <div class="field"><label>Sensações Relatadas pelo Cliente durante Indução</label>
+      <textarea data-field="${p}_sensacoes" class="tall" placeholder="Descreva o que o cliente relatou: calor, formigueiro, leveza, visões de cor, sensações físicas, emoções surgidas..."></textarea></div>
+    <div class="field-row cols-2">
+      <div class="field"><label>Reações Físicas Observadas</label>
+        <textarea data-field="${p}_reacoes_fisicas" class="short" placeholder="Movimentos oculares, respiração, tremores, lágrimas..."></textarea></div>
+      <div class="field"><label>Técnicas Utilizadas</label>
+        <textarea data-field="${p}_tecnicas" class="short" placeholder="Ex: Contagem regressiva, respiração, visualização de escada..."></textarea></div>
+    </div>
+  </div>
+</div>
+
+${buildSalaHipnose(p)}
+${buildNatureza(p)}
+${buildRegressao(p, s)}
+${buildEncerramento(p)}
+`;
+}
+
+function buildAnamnese(p) {
+  return `
+<!-- ANAMNESE COMPLETA (Sessão 1) -->
+<div class="form-section">
+  <div class="fs-header" onclick="toggleSection(this)">
+    <div class="fs-icon" style="background:rgba(90,72,120,0.1);color:var(--violet)">📋</div>
+    <div class="fs-title">Anamnese Completa</div>
+    <div class="fs-toggle">▾</div>
+  </div>
+  <div class="fs-body">
+    <div class="section-divider">Dados Pessoais</div>
+    <div class="field-row cols-3">
+      <div class="field"><label>Profissão</label>
+        <input type="text" data-field="${p}_profissao" placeholder="Ex: Professora, Engenheiro..."></div>
+      <div class="field"><label>Naturalidade</label>
+        <input type="text" data-field="${p}_naturalidade" placeholder="Cidade / País"></div>
+      <div class="field"><label>Nível de Escolaridade</label>
+        <select data-field="${p}_escolaridade">
+          <option value="">— selecionar —</option>
+          <option>Ensino Básico</option>
+          <option>Ensino Secundário</option>
+          <option>Licenciatura</option>
+          <option>Mestrado/Doutoramento</option>
+          <option>Outro</option>
+        </select></div>
+    </div>
+    <div class="section-divider">Situação Familiar</div>
+    <div class="field-row cols-3">
+      <div class="field"><label>Estado Civil</label>
+        <select data-field="${p}_estado_civil">
+          <option value="">— selecionar —</option>
+          <option>Solteiro/a</option>
+          <option>Casado/a</option>
+          <option>União de Facto</option>
+          <option>Divorciado/a</option>
+          <option>Viúvo/a</option>
+        </select></div>
+      <div class="field"><label>Filhos</label>
+        <input type="text" data-field="${p}_filhos" placeholder="Ex: 2 filhos, idades 8 e 12"></div>
+      <div class="field"><label>Com quem vive</label>
+        <input type="text" data-field="${p}_coabitacao" placeholder="Ex: Cônjuge e filhos, sozinho/a..."></div>
+    </div>
+    <div class="field"><label>Dinâmica Familiar — Notas</label>
+      <textarea data-field="${p}_familia_notas" class="tall" placeholder="Descreva a dinâmica familiar, relações significativas, conflitos, apoio familiar, padrões herdados..."></textarea></div>
+    <div class="section-divider">Queixa Principal & Histórico</div>
+    <div class="field"><label>Motivo da Consulta / Queixa Principal</label>
+      <textarea data-field="${p}_queixa" class="tall" placeholder="O que trouxe o cliente até aqui? Qual o problema, sintoma ou questão central que quer trabalhar?"></textarea></div>
+    <div class="field-row cols-2">
+      <div class="field"><label>Há Quanto Tempo</label>
+        <input type="text" data-field="${p}_tempo_queixa" placeholder="Ex: 3 anos, desde infância..."></div>
+      <div class="field"><label>O que já Tentou</label>
+        <input type="text" data-field="${p}_tentativas" placeholder="Ex: Psicoterapia, medicação, coaching..."></div>
+    </div>
+    <div class="section-divider">Saúde & Histórico Médico</div>
+    <div class="field-row cols-2">
+      <div class="field"><label>Diagnósticos / Condições de Saúde</label>
+        <textarea data-field="${p}_diagnosticos" class="short" placeholder="Condições médicas, psiquiátricas ou psicológicas relevantes..."></textarea></div>
+      <div class="field"><label>Medicação Atual</label>
+        <textarea data-field="${p}_medicacao" class="short" placeholder="Medicamentos que toma regularmente..."></textarea></div>
+    </div>
+    <div class="field"><label>Traumas Relevantes / Eventos Marcantes</label>
+      <textarea data-field="${p}_traumas" class="tall" placeholder="Eventos de vida significativos, perdas, traumas, momentos de viragem..."></textarea></div>
+    <div class="section-divider">Crenças & Espiritualidade</div>
+    <div class="field-row cols-2">
+      <div class="field"><label>Crença / Sistema Espiritual</label>
+        <input type="text" data-field="${p}_crenca" placeholder="Ex: Cristã, Espírita, Agnóstica, Budista..."></div>
+      <div class="field"><label>Experiências Espirituais / Paranormais</label>
+        <input type="text" data-field="${p}_experiencias_esp" placeholder="Ex: Sonhos vívidos, visões, presença de entes..."></div>
+    </div>
+    <div class="field"><label>Expectativas em relação ao Protocolo</label>
+      <textarea data-field="${p}_expectativas" class="short" placeholder="O que espera alcançar com estas sessões?"></textarea></div>
+    <div class="section-divider">Checklist de Contraindicações</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.3rem">
+      ${['Epilepsia','Psicose ativa','Transtorno dissociativo grave','Ideação suicida ativa','Gravidez de risco','Uso recente de substâncias'].map(item => `
+      <div class="check-row">
+        <input type="checkbox" data-field="${p}_contra_${item.replace(/ /g,'_')}" id="${p}_c_${item.replace(/ /g,'_')}">
+        <label for="${p}_c_${item.replace(/ /g,'_')}">${item}</label>
+      </div>`).join('')}
+    </div>
+    <div class="field" style="margin-top:1rem"><label>Observações Adicionais Anamnese</label>
+      <textarea data-field="${p}_anamnese_obs" class="short" placeholder="Outras notas relevantes da anamnese..."></textarea></div>
+  </div>
+</div>`;
+}
+
+function buildResumoAnterior(p, n) {
+  return `
+<div class="form-section">
+  <div class="fs-header" onclick="toggleSection(this)">
+    <div class="fs-icon" style="background:rgba(90,72,120,0.1);color:var(--violet)">↩</div>
+    <div class="fs-title">Retorno da Sessão Anterior · Check-in</div>
+    <div class="fs-toggle">▾</div>
+  </div>
+  <div class="fs-body">
+    <div class="field"><label>Como chegou o cliente — Estado emocional / Relatos desde a sessão ${n-1}</label>
+      <textarea data-field="${p}_checkin" class="tall" placeholder="O que o cliente reportou desde a última sessão? Sonhos, memórias emergentes, mudanças percebidas, dificuldades..."></textarea></div>
+    <div class="field-row cols-2">
+      <div class="field"><label>Nível de Abertura (1–10)</label>
+        <input type="number" data-field="${p}_abertura" min="1" max="10" placeholder="1-10"></div>
+      <div class="field"><label>Algo a ajustar no plano terapêutico?</label>
+        <input type="text" data-field="${p}_ajuste_plano" placeholder="Ex: Aprofundar perdão, rever âncora..."></div>
+    </div>
+  </div>
+</div>`;
+}
+
+function buildSalaHipnose(p) {
+  return `
+<!-- VISÕES NA SALA DE CURA DOURADA -->
+<div class="form-section">
+  <div class="fs-header" onclick="toggleSection(this)">
+    <div class="fs-icon" style="background:rgba(154,120,48,0.12);color:var(--gold)">🏛</div>
+    <div class="fs-title">Visões na Sala de Hipnose / Sala de Cura Dourada</div>
+    <div class="fs-toggle">▾</div>
+  </div>
+  <div class="fs-body">
+    <div class="field-row cols-2">
+      <div class="field"><label>Frutas que vê / Cor / Textura</label>
+        <textarea data-field="${p}_frutas" class="short" placeholder="Ex: Maçã vermelha grande, uvas escuras, romã aberta com sementes..." ></textarea></div>
+      <div class="field"><label>Bancada da Cozinha — o que está em cima</label>
+        <textarea data-field="${p}_bancada" class="short" placeholder="Ex: Tigela de barro, faca velha, pão, flores secas..."></textarea></div>
+    </div>
+    <div class="field-row cols-2">
+      <div class="field"><label>Em Cima da Cama — o que está / o que sente</label>
+        <textarea data-field="${p}_cama" class="short" placeholder="Ex: Colcha bordada, luz dourada sobre almofada, figura humana..."></textarea></div>
+      <div class="field"><label>Outros Objetos / Espaços Significativos na Sala</label>
+        <textarea data-field="${p}_sala_outros" class="short" placeholder="Ex: Janela com luz, cadeira antiga, espelho, porta lateral..."></textarea></div>
+    </div>
+    <div class="field"><label>Cenas / Imagens Relatadas após Atravessar a Porta</label>
+      <textarea data-field="${p}_apos_porta" class="tall" placeholder="Transcreva o que o cliente relata ao atravessar a porta: cenário, sensações, personagens, ações, diálogos..."></textarea></div>
+    <div class="field-row cols-2">
+      <div class="field"><label>Emoções Surgidas</label>
+        <textarea data-field="${p}_emocoes_sala" class="short" placeholder="Ex: Paz profunda, tristeza inesperada, alegria, medo inicial..."></textarea></div>
+      <div class="field"><label>Figuras / Seres / Personagens Encontrados</label>
+        <textarea data-field="${p}_figuras" class="short" placeholder="Figuras de luz, guias, antepassados, crianças, animais simbólicos..."></textarea></div>
+    </div>
+  </div>
+</div>`;
+}
+
+function buildNatureza(p) {
+  return `
+<!-- EXPLORAÇÃO NA NATUREZA — BÚSSOLA SIMBÓLICA -->
+<div class="form-section">
+  <div class="fs-header" onclick="toggleSection(this)">
+    <div class="fs-icon" style="background:rgba(58,107,74,0.1);color:var(--green)">🧭</div>
+    <div class="fs-title">Exploração na Natureza · Bússola Simbólica</div>
+    <div class="fs-toggle">▾</div>
+  </div>
+  <div class="fs-body">
+    <div style="font-size:12.5px;color:var(--text-dim);font-style:italic;margin-bottom:1.2rem;padding:0.7rem 1rem;background:var(--gold-pale);border-radius:6px;border-left:3px solid var(--gold-border)">
+      Registe o que o cliente vê/sente em cada direção. A interpretação simbólica é gerada automaticamente à medida que escreve.
+    </div>
+    <div class="direction-grid">
+      ${Object.entries(DIR_MEANINGS).map(([key, d]) => `
+      <div class="dir-card" data-dir="${key}">
+        <div class="dir-head">
+          <div class="dir-compass" style="background:${d.color}20;color:${d.color}">${d.icon}</div>
+          <div class="dir-label">
+            <strong>${d.label}</strong>
+            <div class="dir-meaning">${d.meaning}</div>
+          </div>
+        </div>
+        <div class="dir-body">
+          <textarea data-field="${p}_${key}" placeholder="O que o cliente vê, sente ou relata ao olhar para ${d.label.toLowerCase()}..."></textarea>
+          <div class="dir-interp" id="interp_${p}_${key}">
+            <strong>Interpretação Simbólica ·</strong> <span class="interp-text"></span>
+          </div>
+        </div>
+      </div>`).join('')}
+    </div>
+    <div class="field" style="margin-top:1.2rem"><label>Síntese da Exploração na Natureza</label>
+      <textarea data-field="${p}_natureza_sintese" class="tall" placeholder="Síntese e interpretação geral das direções, padrões emergentes, conexões temáticas entre as visões..."></textarea></div>
+  </div>
+</div>`;
+}
+
+function buildRegressao(p, s) {
+  return `
+<!-- REGRESSÃO / TRABALHO INTERIOR -->
+<div class="form-section">
+  <div class="fs-header" onclick="toggleSection(this)">
+    <div class="fs-icon" style="background:rgba(45,107,107,0.1);color:var(--teal)">🌀</div>
+    <div class="fs-title">Regressão & Trabalho Interior</div>
+    <div class="fs-toggle">▾</div>
+  </div>
+  <div class="fs-body">
+    <div class="field-row cols-3">
+      <div class="field"><label>Tipo de Trabalho</label>
+        <select data-field="${p}_tipo_trabalho">
+          <option value="">— selecionar —</option>
+          <option>Regressão a Vida Passada</option>
+          <option>Regressão a Infância</option>
+          <option>Sala de Cura Dourada</option>
+          <option>Templo do Perdão</option>
+          <option>Templo da Luz / Eu Superior</option>
+          <option>Desobsessão</option>
+          <option>Integração de Fragmentos de Alma</option>
+          <option>Psicodrama Interior</option>
+          <option>Trabalho de Node Point</option>
+          <option>Selagem / Encerramento</option>
+        </select></div>
+      <div class="field"><label>Época / Período (Vida Passada)</label>
+        <input type="text" data-field="${p}_epoca" placeholder="Ex: Séc. XVII, Egito Antigo, 1940..."></div>
+      <div class="field"><label>Local / País / Cultura</label>
+        <input type="text" data-field="${p}_local_regressao" placeholder="Ex: Europa, Ásia, Roma Antiga..."></div>
+    </div>
+    <div class="field-row cols-3">
+      <div class="field"><label>Personagem (Sexo / Nome)</label>
+        <input type="text" data-field="${p}_personagem" placeholder="Ex: Mulher, nome desconhecido; Homem chamado Ali..."></div>
+      <div class="field"><label>Papel Social / Condição</label>
+        <input type="text" data-field="${p}_papel" placeholder="Ex: Camponesa, soldado, sacerdotisa..."></div>
+      <div class="field"><label>Relação com Vida Atual</label>
+        <input type="text" data-field="${p}_relacao_atual" placeholder="Ex: Mãe atual, patrão, parceiro..."></div>
+    </div>
+    <div class="field"><label>Cenas Relatadas — Transcrição</label>
+      <textarea data-field="${p}_cenas" class="tall" placeholder="Transcreva as cenas em detalhe: o que o cliente vê, ouve, sente, quais os eventos que se desenrolam, diálogos..."></textarea></div>
+    <div class="field-row cols-2">
+      <div class="field"><label>Emoções Predominantes</label>
+        <textarea data-field="${p}_emocoes_reg" class="short" placeholder="Ex: Medo de abandono, culpa, amor intenso, traição..."></textarea></div>
+      <div class="field"><label>Momento / Cena de Maior Impacto</label>
+        <textarea data-field="${p}_momento_impacto" class="short" placeholder="A cena que mais mobilizou o cliente emocionalmente..."></textarea></div>
+    </div>
+    <div class="field"><label>Resolução / Cura realizada</label>
+      <textarea data-field="${p}_resolucao" class="tall" placeholder="Como se resolveu a cena? Perdão concedido/pedido? Libertação de voto/pacto? Integração de fragmento? Mensagem do Eu Superior?"></textarea></div>
+    <div class="field-row cols-2">
+      <div class="field"><label>Ab-reação — Houve?</label>
+        <select data-field="${p}_abreacao">
+          <option value="">— selecionar —</option>
+          <option>Não</option>
+          <option>Sim — leve (lágrimas, tremor)</option>
+          <option>Sim — moderada</option>
+          <option>Sim — intensa (necessitou contenção)</option>
+        </select></div>
+      <div class="field"><label>Como foi Gerida</label>
+        <input type="text" data-field="${p}_gestao_abreacao" placeholder="Ex: Respiração, ancoragem, redirecionamento..."></div>
+    </div>
+    <div class="field"><label>Mensagens / Insights Recebidos</label>
+      <textarea data-field="${p}_insights" class="tall" placeholder="Mensagens do Eu Superior, do guia, insights espontâneos, aprendizagens que o cliente verbalizou..."></textarea></div>
+  </div>
+</div>`;
+}
+
+function buildEncerramento(p) {
+  return `
+<!-- ENCERRAMENTO & NOTAS DO TERAPEUTA -->
+<div class="form-section">
+  <div class="fs-header" onclick="toggleSection(this)">
+    <div class="fs-icon" style="background:rgba(138,80,32,0.1);color:var(--amber)">📝</div>
+    <div class="fs-title">Encerramento & Notas do Terapeuta</div>
+    <div class="fs-toggle">▾</div>
+  </div>
+  <div class="fs-body">
+    <div class="field-row cols-2">
+      <div class="field"><label>Estado do Cliente ao Sair</label>
+        <textarea data-field="${p}_estado_final" class="short" placeholder="Como saiu o cliente? Tranquilo, emocionado, reflexivo, aliviado..."></textarea></div>
+      <div class="field"><label>Recomendações / Indicações Dadas</label>
+        <textarea data-field="${p}_recomendacoes" class="short" placeholder="Ex: Beber água, descansar, evitar decisões importantes, journaling..."></textarea></div>
+    </div>
+    <div class="field"><label>Análise do Terapeuta — Leitura da Sessão</label>
+      <textarea data-field="${p}_analise" class="tall" placeholder="A sua leitura clínica da sessão: padrões identificados, progressos, resistências, conexões temáticas com sessões anteriores, hipóteses de trabalho..."></textarea></div>
+    <div class="field-row cols-2">
+      <div class="field"><label>Temas para Aprofundar</label>
+        <textarea data-field="${p}_temas_proximos" class="short" placeholder="O que ficou em aberto, o que precisa de ser continuado..."></textarea></div>
+      <div class="field"><label>Plano para a Próxima Sessão</label>
+        <textarea data-field="${p}_plano_proximo" class="short" placeholder="Intenção e estrutura da próxima sessão..."></textarea></div>
+    </div>
+    <div class="field"><label>Notas Adicionais Livres</label>
+      <textarea data-field="${p}_notas_livres" class="tall" placeholder="Qualquer outra observação, intuição ou nota relevante..."></textarea></div>
+  </div>
+</div>`;
+}
+
+// ══════════════════════════════════════════════
+// DIRECTION INTERPRETATION
+// ══════════════════════════════════════════════
+function updateDirInterp(card, dirKey, text) {
+  const d = DIR_MEANINGS[dirKey];
+  if(!d) return;
+  const clientId = currentClientId;
+  const interpEl = card.querySelector('.dir-interp');
+  if(!interpEl) return;
+  if(text && text.trim().length > 3) {
+    interpEl.querySelector('.interp-text').textContent = d.desc;
+    interpEl.classList.add('show');
+  } else {
+    interpEl.classList.remove('show');
+  }
+}
+
+// ══════════════════════════════════════════════
+// TOGGLE SECTION
+// ══════════════════════════════════════════════
+function toggleSection(header) {
+  const body = header.nextElementSibling;
+  const tog = header.querySelector('.fs-toggle');
+  if(body.classList.contains('collapsed')) {
+    body.classList.remove('collapsed');
+    tog.style.transform = '';
+  } else {
+    body.classList.add('collapsed');
+    tog.style.transform = 'rotate(-90deg)';
+  }
+}
+
+// ══════════════════════════════════════════════
+// SAVE
+// ══════════════════════════════════════════════
+let autoSaveTimer = null;
+function autoSave() {
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => { saveCurrentSession(true); }, 1200);
+}
+function saveCurrentSession(silent = false) {
+  if(!currentClientId) return;
+  const data = collectFormData(currentClientId, currentSession);
+  if(!state.clientes[currentClientId].sessoes) state.clientes[currentClientId].sessoes = {};
+  state.clientes[currentClientId].sessoes[currentSession] = data;
+  saveState();
+  renderTabs();
+  if(!silent) {
+    const el = document.getElementById('saveStatus');
+    if(el) { el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 2500); }
+  }
+}
+
+// ══════════════════════════════════════════════
+// EXPORT TXT
+// ══════════════════════════════════════════════
+function exportTXT() {
+  if(!currentClientId) return;
+  saveCurrentSession(true);
+  const c = state.clientes[currentClientId];
+  let txt = `═══════════════════════════════════════════════════\n`;
+  txt += `FICHA DE ATENDIMENTO — PROTOCOLO REGRESSÃO MULTIDIMENSIONAL\n`;
+  txt += `Academia Pedro Frias · DGERT\n`;
+  txt += `═══════════════════════════════════════════════════\n\n`;
+  txt += `CLIENTE: ${c.nome}\n`;
+  if(c.idade) txt += `IDADE: ${c.idade} anos\n`;
+  if(c.genero) txt += `GÉNERO: ${c.genero}\n`;
+  if(c.contacto) txt += `CONTACTO: ${c.contacto}\n`;
+  txt += `FICHA CRIADA: ${c.dataCriacao}\n`;
+  txt += `EXPORTADO: ${new Date().toLocaleString('pt-PT')}\n\n`;
+  SESSION_THEMES.forEach(s => {
+    const sess = c.sessoes?.[s.n];
+    if(!sess || !Object.values(sess).some(v => v)) return;
+    txt += `\n${'─'.repeat(50)}\n${s.title.toUpperCase()} · ${s.tema}\n${'─'.repeat(50)}\n\n`;
+    Object.entries(sess).forEach(([k, v]) => {
+      if(!v || v === 'false' || v === false) return;
+      const label = k.replace(/_/g, ' ').replace(/^[a-z] /, '').toUpperCase();
+      txt += `${label}:\n${v === true || v === 'true' ? '✓ Sim' : v}\n\n`;
+    });
+  });
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Ficha_${c.nome.replace(/ /g,'_')}_${new Date().toLocaleDateString('pt-PT').replace(/\//g,'-')}.txt`;
+  a.click();
+}
+
+// ══════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ══════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveCurrentSession(); }
+  if(e.key === 'Escape') { document.querySelectorAll('.modal-overlay.show').forEach(m => m.classList.remove('show')); }
+});
+
+// ══════════════════════════════════════════════
+// IMPORTAR DO GOOGLE FORMS
+// ══════════════════════════════════════════════
+
+function setSyncStatus(estado) {
+  const dot = document.getElementById('syncDot');
+  const lbl = document.getElementById('syncLabel');
+  if(!dot||!lbl) return;
+  const m = {
+    idle:   {c:'var(--text-faint)', t:'Google Forms'},
+    loading:{c:'var(--gold)',       t:'A verificar Forms\u2026'},
+    ok:     {c:'var(--green)',      t:'Forms sincronizado \u2713'},
+    skip:   {c:'var(--blue)',       t:'Forms \u2014 sem novidades'},
+    error:  {c:'var(--rose)',       t:'Forms \u2014 sem resposta'},
+  };
+  const s = m[estado]||m.idle;
+  dot.style.background = s.c;
+  lbl.style.color      = s.c;
+  lbl.textContent      = s.t;
+}
+
+function fetchJSONP(url) {
+  return new Promise((resolve, reject) => {
+    const cb = 'hleFormsCallback';
+    delete window[cb];
+    const old = document.getElementById('hleFormsScript');
+    if(old) old.remove();
+    const timer = setTimeout(() => { delete window[cb]; reject(new Error('timeout')); }, 8000);
+    window[cb] = (data) => { clearTimeout(timer); delete window[cb]; resolve(data); };
+    const sc = document.createElement('script');
+    sc.id  = 'hleFormsScript';
+    sc.src = url + '?callback=' + cb + '&t=' + Date.now();
+    document.body.appendChild(sc);
+  });
+}
+
+function escHtml(v) { return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function _s(v) { return (v===null||v===undefined)?'':String(v).trim(); }
+
+function processarDadosForms(row, force) {
+  if(!row||row.erro) return false;
+  const nome = _s(row['Nome completo']||row['Nome Completo']||'');
+  if(!nome) return false;
+
+  if(!force) {
+    const contacto = _s(row[Object.keys(row).find(k=>/telefone|telemovel|contato|email/i.test(k))]||'');
+    if(contacto) {
+      const dup = Object.values(state.clientes).some(cl=>_s(cl.contacto).toLowerCase()===contacto.toLowerCase());
+      if(dup) return false;
+    }
+  }
+
+  let idade = '';
+  const dob = _s(row['Data de nascimento']||'');
+  if(dob) { const d=new Date(dob); if(!isNaN(d)) idade=String(new Date().getFullYear()-d.getFullYear()); }
+
+  const id = 'c_' + Date.now();
+  const p  = id + '_s1';
+
+  function g(k) { return _s(row[k]||''); }
+
+  const queixa = [g('Qual \u00e9 o motivo principal que a leva a procurar este acompanhamento?'), g('Descreva com as suas pr\u00f3prias palavras o que est\u00e1 a viver e o que o/a trouxe at\u00e9 aqui.')].filter(Boolean).join('\n\n');
+  const medicacao = [g('Toma atualmente algum medicamento?'), g('Se toma medica\u00e7\u00e3o, indique qual (nome e dose, se souber)')].filter(Boolean).join(' \u2014 ');
+  const traumas = [
+    g('Existe alguma emo\u00e7\u00e3o que sente com muita frequ\u00eancia, mesmo sem raz\u00e3o aparente?'),
+    g('Se sim, em que zona(s) do corpo e h\u00e1 quanto tempo?'),
+    g('Onde no corpo costuma sentir essas emo\u00e7\u00f5es com mais intensidade?'),
+    g('Se essa sensa\u00e7\u00e3o no corpo pudesse falar, o que diria?'),
+    g('Tem medos ou fobias que considera irracionais, sem explica\u00e7\u00e3o na sua hist\u00f3ria de vida?')
+  ].filter(Boolean).join('\n\n');
+  const familia = [
+    g('Como descreve a rela\u00e7\u00e3o que teve com os seus pais ou cuidadores na inf\u00e2ncia?'),
+    g('Existe algum padr\u00e3o que se repete na sua vida, mesmo que tente mud\u00e1-lo?'),
+    g('Sente que carrega responsabilidades, culpas ou d\u00edvidas que n\u00e3o s\u00e3o suas?') ? 'Responsabilidades: '+g('Sente que carrega responsabilidades, culpas ou d\u00edvidas que n\u00e3o s\u00e3o suas?') : '',
+    g('Tem dificuldade em dizer n\u00e3o ou em impor limites?') ? 'Limites: '+g('Tem dificuldade em dizer n\u00e3o ou em impor limites?') : ''
+  ].filter(Boolean).join('\n\n');
+  const espiritual = [
+    g('Tem sonhos v\u00edvidos, recorrentes ou com forte carga emocional?') ? 'Sonhos: '+g('Tem sonhos v\u00edvidos, recorrentes ou com forte carga emocional?') : '',
+    g('Se sim, h\u00e1 algum tema recorrente nesses sonhos? (opcional)') ? 'Tema: '+g('Se sim, h\u00e1 algum tema recorrente nesses sonhos? (opcional)') : '',
+    g('J\u00e1 sentiu a presen\u00e7a de algu\u00e9m que faleceu, ou de uma entidade ou energia que n\u00e3o conseguiu explicar?') ? 'Presen\u00e7a: '+g('J\u00e1 sentiu a presen\u00e7a de algu\u00e9m que faleceu, ou de uma entidade ou energia que n\u00e3o conseguiu explicar?') : '',
+    g('J\u00e1 teve sensa\u00e7\u00f5es de d\u00e9j\u00e0 vu intenso \u2014 a sensa\u00e7\u00e3o de \u201cj\u00e1 ter vivido\u201d algo antes?') ? 'D\u00e9j\u00e0 vu: '+g('J\u00e1 teve sensa\u00e7\u00f5es de d\u00e9j\u00e0 vu intenso \u2014 a sensa\u00e7\u00e3o de \u201cj\u00e1 ter vivido\u201d algo antes?') : ''
+  ].filter(Boolean).join('\n');
+  const obs = [
+    g('J\u00e1 teve alguma experi\u00eancia de hipnose, medita\u00e7\u00e3o guiada, regress\u00e3o ou estado alterado de consci\u00eancia?') ? 'Hipnose/medita\u00e7\u00e3o: '+g('J\u00e1 teve alguma experi\u00eancia de hipnose, medita\u00e7\u00e3o guiada, regress\u00e3o ou estado alterado de consci\u00eancia?') : '',
+    g('Como descreve o seu n\u00edvel de concentra\u00e7\u00e3o durante leitura, m\u00fasica ou relaxamento?') ? 'Concentra\u00e7\u00e3o: '+g('Como descreve o seu n\u00edvel de concentra\u00e7\u00e3o durante leitura, m\u00fasica ou relaxamento?') : '',
+    g('H\u00e1 algo que nunca partilhou com ningu\u00e9m e que sente que pode estar ligado ao seu sofrimento? (opcional e totalmente confidencial)') ? 'Confidencial: '+g('H\u00e1 algo que nunca partilhou com ningu\u00e9m e que sente que pode estar ligado ao seu sofrimento? (opcional e totalmente confidencial)') : '',
+    g('H\u00e1 alguma informa\u00e7\u00e3o adicional que considere importante que eu saiba antes da primeira sess\u00e3o?') ? 'Adicional: '+g('H\u00e1 alguma informa\u00e7\u00e3o adicional que considere importante que eu saiba antes da primeira sess\u00e3o?') : ''
+  ].filter(Boolean).join('\n\n');
+  const expectativas = [
+    g('O que espera sentir ou alcan\u00e7ar no final das 7 sess\u00f5es?'),
+    g('Se pudesse mudar apenas uma coisa na sua vida, qual seria?') ? 'Mudan\u00e7a: '+g('Se pudesse mudar apenas uma coisa na sua vida, qual seria?') : '',
+    g('Como se sente em rela\u00e7\u00e3o \u00e0 possibilidade de explorar mem\u00f3rias de vidas anteriores?') ? 'Vidas passadas: '+g('Como se sente em rela\u00e7\u00e3o \u00e0 possibilidade de explorar mem\u00f3rias de vidas anteriores?') : ''
+  ].filter(Boolean).join('\n\n');
+
+  state.clientes[id] = {
+    nome, contacto, idade, genero:'',
+    dataCriacao: new Date().toLocaleDateString('pt-PT'),
+    sessoes: { 1: {
+      [p+'_sessao_num']:    '1',
+      [p+'_data']:          new Date().toISOString().split('T')[0],
+      [p+'_profissao']:     g('Profiss\u00e3o'),
+      [p+'_naturalidade']:  g('Nacionalidade / pa\u00eds de resid\u00eancia'),
+      [p+'_estado_civil']:  g('Situa\u00e7\u00e3o familiar'),
+      [p+'_filhos']:        g('Tem filhos?'),
+      [p+'_queixa']:        queixa,
+      [p+'_tempo_queixa']:  g('H\u00e1 quanto tempo sente este problema ou padr\u00e3o?'),
+      [p+'_tentativas']:    [g('J\u00e1 fez algum tipo de acompanhamento terap\u00eautico ou tratamento anteriormente?'), g('Se respondeu sim, como correu? O que ficou por resolver?')].filter(Boolean).join(' \u2014 '),
+      [p+'_medicacao']:     medicacao,
+      [p+'_diagnosticos']:  g('Tem ou j\u00e1 teve algum diagn\u00f3stico psiqui\u00e1trico?'),
+      [p+'_traumas']:       traumas,
+      [p+'_familia_notas']: familia,
+      [p+'_crenca']:        g('Tem alguma crença espiritual, religiosa ou filos\u00f3fica?'),
+      [p+'_experiencias_esp']: espiritual,
+      [p+'_expectativas']:  expectativas,
+      [p+'_anamnese_obs']:  obs
+    }}
+  };
+  saveState();
+  renderClientList();
+  return id;
+}
+
+let _formsFailCount=0, _formsSuspended=false, _formsIntervalId=null;
+
+function importarAutomatico() {
+  if(_formsSuspended) return;
+  setSyncStatus('loading');
+  fetchJSONP(FORMS_ENDPOINT)
+    .then(payload => {
+      _formsFailCount = 0; _formsSuspended = false;
+      const lista = (payload&&Array.isArray(payload.rows)) ? payload.rows : [payload];
+      let novos = 0;
+      lista.forEach(row => { if(processarDadosForms(row)) novos++; });
+      setSyncStatus(novos>0?'ok':'skip');
+      if(novos>0) {
+        const el = document.getElementById('saveStatus');
+        if(el) { el.textContent='\u2713 '+novos+' cliente(s) importado(s) do Forms'; el.classList.add('show'); setTimeout(()=>{ el.classList.remove('show'); el.textContent='\u2713 Guardado com sucesso'; },4000); }
+      }
+    })
+    .catch(() => {
+      _formsFailCount++;
+      if(_formsFailCount>=2) { _formsSuspended=true; if(_formsIntervalId){clearInterval(_formsIntervalId);_formsIntervalId=null;} }
+      setSyncStatus('error');
+    });
+}
+
+async function openImportModal() {
+  document.getElementById('importModal').classList.add('show');
+  document.getElementById('importList').innerHTML = '<div class="import-loading">\u23f3 A carregar respostas\u2026</div>';
+  try {
+    const payload = await fetchJSONP(FORMS_ENDPOINT);
+    const lista   = (payload&&Array.isArray(payload.rows)) ? payload.rows : [payload];
+    const valid   = lista.filter(r=>r&&!r.erro&&_s(r['Nome completo']||r['Nome Completo']));
+    if(!valid.length) { document.getElementById('importList').innerHTML='<div class="import-empty">Nenhuma resposta encontrada.</div>'; return; }
+    window._importRows = valid;
+    document.getElementById('importList').innerHTML = valid.map((row,i)=>
+      '<div class="import-row" onclick="importResponse('+i+')">'+
+        '<div style="font-size:20px">&#127807;</div>'+
+        '<div style="flex:1">'+
+          '<div class="import-row-name">'+escHtml(row['Nome completo']||row['Nome Completo']||'Sem nome')+'</div>'+
+          '<div class="import-row-date">'+escHtml(row['Carimbo de data/hora']||'')+'</div>'+
+        '</div>'+
+        '<div style="font-size:11px;color:var(--teal)">Importar \u2192</div>'+
+      '</div>'
+    ).join('');
+  } catch(e) {
+    document.getElementById('importList').innerHTML='<div class="import-error">Erro: '+escHtml(e.message)+'</div>';
+  }
+}
+
+function importResponse(idx) {
+  const row = window._importRows?.[idx];
+  if(!row) return;
+  const idCriado = processarDadosForms(row, true);
+  closeModal('importModal');
+  if(idCriado) {
+    openClient(idCriado);
+    setTimeout(()=>{
+      const el = document.getElementById('saveStatus');
+      if(el){ el.textContent='\u2713 Anamnese importada do Google Forms'; el.classList.add('show'); setTimeout(()=>{ el.classList.remove('show'); el.textContent='\u2713 Guardado com sucesso'; },3500); }
+    },400);
+  }
+}
+
+// ══════════════════════════════════════════════
+loadState();
+renderClientList();
+importarAutomatico();
+_formsIntervalId = setInterval(importarAutomatico, 120000);
+renderClientList();
+</script>
+</body>
+</html>
