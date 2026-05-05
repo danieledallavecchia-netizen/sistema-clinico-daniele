@@ -1,0 +1,24 @@
+{
+  "name": "Daniele Dallavecchia · Psicanálise & Psicoterapia",
+  "short_name": "Daniele DD",
+  "description": "App da cliente — espaço terapêutico digital",
+  "start_url": "./App_Cliente_v12_OFICIAL.html",
+  "display": "standalone",
+  "background_color": "#08030f",
+  "theme_color": "#08030f",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
