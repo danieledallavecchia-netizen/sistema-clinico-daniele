@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Instalar App · Daniele Dallavecchia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#08030f;
+    --surface:rgba(255,255,255,0.04);
+    --border:rgba(255,255,255,0.09);
+    --gold:#c9a84c;
+    --gold-dim:rgba(201,168,76,0.12);
+    --text:#f0eaf8;
+    --text2:rgba(240,234,248,0.6);
+    --violet:#9d7fd8;
+  }
+  html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif}
+  body{
+    display:flex;flex-direction:column;align-items:center;
+    padding:32px 24px 48px;min-height:100vh;
+    background:radial-gradient(ellipse at top,rgba(157,127,216,0.07) 0%,transparent 60%);
+  }
+
+  /* Logo / título */
+  .logo-area{text-align:center;margin-bottom:36px}
+  .logo-title{
+    font-family:'Cinzel',serif;
+    font-size:17px;letter-spacing:2px;color:var(--gold);
+    text-transform:uppercase;margin-bottom:4px;
+  }
+  .logo-sub{font-size:12px;color:var(--text2);letter-spacing:1.5px;text-transform:uppercase}
+
+  /* Card principal */
+  .card{
+    width:100%;max-width:420px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:28px 24px;
+    backdrop-filter:blur(20px);
+    margin-bottom:20px;
+  }
+  .card-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:26px;font-weight:600;color:var(--text);
+    margin-bottom:6px;text-align:center;
+  }
+  .card-sub{font-size:14px;color:var(--text2);text-align:center;margin-bottom:28px;line-height:1.6}
+
+  /* Botão principal */
+  .btn-open{
+    display:block;width:100%;padding:16px;
+    background:var(--gold);border:none;border-radius:14px;
+    font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;
+    color:#08030f;cursor:pointer;text-align:center;
+    text-decoration:none;
+    box-shadow:0 4px 24px rgba(201,168,76,0.25);
+    transition:transform .15s;
+    margin-bottom:20px;
+  }
+  .btn-open:active{transform:scale(0.98)}
+
+  /* Passos */
+  .steps-title{
+    font-size:11px;font-weight:500;letter-spacing:2px;
+    text-transform:uppercase;color:var(--text2);
+    text-align:center;margin-bottom:18px;
+  }
+  .step{
+    display:flex;align-items:flex-start;gap:14px;
+    margin-bottom:18px;
+  }
+  .step-num{
+    width:32px;height:32px;border-radius:50%;
+    background:var(--gold-dim);border:1px solid rgba(201,168,76,0.3);
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:700;color:var(--gold);flex-shrink:0;
+  }
+  .step-text{flex:1;padding-top:5px}
+  .step-main{font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px}
+  .step-detail{font-size:12px;color:var(--text2);line-height:1.5}
+
+  /* Toggle Android/iOS */
+  .os-toggle{
+    display:flex;gap:8px;margin-bottom:24px;
+    background:rgba(255,255,255,0.04);
+    border-radius:10px;padding:4px;
+  }
+  .os-btn{
+    flex:1;padding:8px;border:none;border-radius:8px;
+    font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+    cursor:pointer;background:transparent;color:var(--text2);transition:.15s;
+  }
+  .os-btn.active{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+
+  /* Divisor */
+  .divider{
+    border:none;border-top:1px solid var(--border);margin:4px 0 20px;
+  }
+
+  /* Footer */
+  .footer{font-size:11px;color:var(--text2);text-align:center;line-height:1.7;max-width:360px}
+</style>
+</head>
+<body>
+
+<div class="logo-area">
+  <div class="logo-title">Daniele Dallavecchia</div>
+  <div class="logo-sub">Psicanálise &amp; Psicoterapia</div>
+</div>
+
+<div class="card">
+  <div class="card-title">Instalar a App</div>
+  <div class="card-sub">O seu espaço terapêutico digital.<br>Instale em 3 passos simples.</div>
+
+  <!-- Botão abrir app -->
+  <a class="btn-open" href="App_Cliente_v12_OFICIAL.html" id="appLink">
+    ✦ Abrir a App
+  </a>
+
+  <!-- Toggle Android / iOS -->
+  <div class="os-toggle">
+    <button class="os-btn active" id="btnAndroid" onclick="mostrar('android')">🤖 Android</button>
+    <button class="os-btn" id="btnIOS" onclick="mostrar('ios')">🍎 iPhone</button>
+  </div>
+
+  <div class="steps-title">Como instalar</div>
+
+  <!-- Passos Android -->
+  <div id="steps-android">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">
+        <div class="step-main">Toque em "Abrir a App" acima</div>
+        <div class="step-detail">A app abre no Chrome</div>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">
+        <div class="step-main">Toque nos 3 pontos ⋮ no canto superior direito</div>
+        <div class="step-detail">Menu do Chrome</div>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text">
+        <div class="step-main">Toque em "Adicionar ao ecrã inicial"</div>
+        <div class="step-detail">Confirme — a app aparece no seu ecrã como uma app normal ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Passos iOS -->
+  <div id="steps-ios" style="display:none">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">
+        <div class="step-main">Toque em "Abrir a App" acima</div>
+        <div class="step-detail">A app abre no Chrome</div>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">
+        <div class="step-main">Toque no ícone de Partilha 📤</div>
+        <div class="step-detail">Na barra inferior do Chrome</div>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text">
+        <div class="step-main">Toque em "Adicionar ao ecrã inicial"</div>
+        <div class="step-detail">Confirme — a app aparece no seu ecrã como uma app normal ✓</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="footer">
+  Tem dúvidas? Contacte a Daniele via WhatsApp<br>
+  <a href="https://wa.me/351915779691" style="color:var(--gold);text-decoration:none">+351 915 779 691</a>
+</p>
+
+<script>
+function mostrar(os) {
+  document.getElementById('steps-android').style.display = os==='android' ? 'block' : 'none';
+  document.getElementById('steps-ios').style.display = os==='ios' ? 'block' : 'none';
+  document.getElementById('btnAndroid').classList.toggle('active', os==='android');
+  document.getElementById('btnIOS').classList.toggle('active', os==='ios');
+}
+
+// Detectar iOS automaticamente
+if(/iPad|iPhone|iPod/.test(navigator.userAgent)) mostrar('ios');
+</script>
+</body>
+</html>
