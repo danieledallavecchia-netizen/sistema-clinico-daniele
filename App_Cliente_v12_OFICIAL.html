@@ -2169,6 +2169,7 @@ const MOODS = ['✨ Clareza','💪 Força','🌊 Paz','🔥 Energia','🌱 Grati
 // Daniele adiciona uma linha por cliente
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzBGhVOM83mSWIxpxvfb64DVIlKB1yyN2XS_pXryI4wuC6Q0o_ntJIufqIPnZjXOrwT/exec';
 const APP_HUB = 'https://danieledallavecchia-netizen.github.io/sistema-clinico-daniele/';
+const AUDIO_HUB = 'https://danieledallavecchia-netizen.github.io/Quizzes/';
 
 const CLIENTS = {
   '0001': { firstName: 'Ana Rita',  fullName: 'Ana Rita da Costa',  calendarLink: '', clienteId: '' },
@@ -2177,11 +2178,11 @@ const CLIENTS = {
 };
 
 const HIPNOSES = [
-  {n:1,name:'Hipnose Desbloqueador Emocional',dur:'22 min',status:'done',em:'🌟', audioUrl: APP_HUB + 'Sess%C3%A3o%201-%20Completa%20-%20voz%20e%20m%C3%BAsica%20-%20com%20despertar.mp3'},
+  {n:1,name:'Hipnose Desbloqueador Emocional',dur:'22 min',status:'done',em:'🌟', audioUrl: AUDIO_HUB + 'Sess%C3%A3o%201-%20Completa%20-%20voz%20e%20m%C3%BAsica%20-%20com%20despertar.mp3'},
   {n:2,name:'Hipnose Ressignificador Emocional',dur:'28 min',status:'done',em:'🔮'},
   {n:3,name:'Hipnose Força Interna — Âncoras Somáticas',dur:'25 min',status:'current',em:'🌙'},
   {n:4,name:'Hipnose Nuvem Espelho + Condicionativa',dur:'30 min',status:'locked',em:'☁️'},
-  {n:5,name:'Hipnose Cura Energética',dur:'35 min',status:'locked',em:'✨', audioUrl: APP_HUB + 'Chackra%20raiz%20-%20voz%20e%20m%C3%BAsica.mp3'},
+  {n:5,name:'Hipnose Cura Energética',dur:'35 min',status:'locked',em:'✨', audioUrl: AUDIO_HUB + 'Chackra%20raiz%20-%20voz%20e%20m%C3%BAsica.mp3'},
   {n:6,name:'Hipnose Timeline Therapy — Vida Paralela',dur:'32 min',status:'locked',em:'🌀'},
   {n:7,name:'Hipnose Cura da Criança Interior',dur:'38 min',status:'locked',em:'💛'},
   {n:8,name:'Hipnose Saúde e Bem-estar',dur:'30 min',status:'locked',em:'🌿'},
@@ -3005,7 +3006,7 @@ function audioClose() {
 
 function abrirEuSou() {
   audioOpen(
-    APP_HUB + 'EU%20SOU.mp3',
+    AUDIO_HUB + 'EU%20SOU.mp3',
     'Eu Sou — 21 Dias',
     'Protocolo de ancoragem interior'
   );
